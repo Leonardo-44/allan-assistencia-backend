@@ -8,6 +8,8 @@ public record ClienteRequestDTO(
         String nome,
 
         @NotBlank(message="O telefone é obrigatório.")
-        String telefone
-        ) {
+        String telefone,
+
+        @Email(message = "Informe um email válido.")
+        String email) {
 }
