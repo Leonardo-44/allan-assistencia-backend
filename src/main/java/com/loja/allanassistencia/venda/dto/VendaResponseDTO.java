@@ -15,6 +15,12 @@ public record VendaResponseDTO(
 
         BigDecimal valor,
 
+        BigDecimal valorPago,
+
+        BigDecimal valorRestante,
+
+        String statusPagamento,
+
         String formaPagamento,
 
         LocalDateTime dataVenda

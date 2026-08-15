@@ -33,6 +33,9 @@ public class Venda {
     @Column(name = "data_venda")
     private LocalDateTime dataVenda;
 
+    @Column(name = "valor_pago", nullable = false, precision = 10, scale = 2)
+    private BigDecimal valorPago = BigDecimal.ZERO;
+
     public Venda() {
     }
 
@@ -86,5 +89,13 @@ public class Venda {
 
     public void setDataVenda(LocalDateTime dataVenda) {
         this.dataVenda = dataVenda;
+    }
+
+    public BigDecimal getValorPago() {
+        return valorPago;
+    }
+
+    public void setValorPago(BigDecimal valorPago) {
+        this.valorPago = valorPago;
     }
 }

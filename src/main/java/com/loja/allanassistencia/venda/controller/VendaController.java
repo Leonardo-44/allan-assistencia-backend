@@ -1,5 +1,6 @@
 package com.loja.allanassistencia.venda.controller;
 
+import com.loja.allanassistencia.venda.dto.RegistrarPagamentoDTO;
 import com.loja.allanassistencia.venda.dto.VendaRequestDTO;
 import com.loja.allanassistencia.venda.dto.VendaResponseDTO;
 import com.loja.allanassistencia.venda.service.VendaService;
@@ -43,6 +44,14 @@ public class VendaController {
             @Valid @RequestBody VendaRequestDTO dto
     ) {
         return vendaService.atualizar(id, dto);
+    }
+
+    @PatchMapping("/{id}/pagamento")
+    public VendaResponseDTO registrarPagamento(
+            @PathVariable Long id,
+            @Valid @RequestBody RegistrarPagamentoDTO dto
+    ) {
+        return vendaService.registrarPagamento(id, dto);
     }
 
     @DeleteMapping("/{id}")

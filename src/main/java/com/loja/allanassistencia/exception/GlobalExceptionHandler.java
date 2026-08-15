@@ -59,4 +59,18 @@ public class GlobalExceptionHandler {
 
         return resposta;
     }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public Map<String, Object> handleIllegalArgument(
+            IllegalArgumentException exception
+    ) {
+
+        Map<String, Object> resposta = new HashMap<>();
+
+        resposta.put("status", 400);
+        resposta.put("mensagem", exception.getMessage());
+
+        return resposta;
+    }
 }

@@ -5,6 +5,7 @@ import com.loja.allanassistencia.cliente.repository.ClienteRepository;
 import com.loja.allanassistencia.exception.RecursoNaoEncontradoException;
 import com.loja.allanassistencia.movimentacaofinanceira.entity.MovimentacaoFinanceira;
 import com.loja.allanassistencia.movimentacaofinanceira.repository.MovimentacaoFinanceiraRepository;
+import com.loja.allanassistencia.venda.dto.RegistrarPagamentoDTO;
 import com.loja.allanassistencia.venda.dto.VendaRequestDTO;
 import com.loja.allanassistencia.venda.dto.VendaResponseDTO;
 import com.loja.allanassistencia.venda.entity.Venda;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.loja.allanassistencia.movimentacaofinanceira.entity.TipoMovimentacao;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -43,12 +45,7 @@ public class VendaService {
 
     public VendaResponseDTO buscarPorId(Long id) {
 
-        Venda venda = vendaRepository.findById(id)
-                .orElseThrow(() ->
-                        new RecursoNaoEncontradoException(
-                                "Venda não encontrada."
-                        )
-                );
+        Venda venda = buscarVendaOuFalhar(id);
 
         return converterParaResponse(venda);
     }
@@ -56,16 +53,13 @@ public class VendaService {
     @Transactional
     public VendaResponseDTO salvar(VendaRequestDTO dto) {
 
-        Cliente cliente = null;
+        Cliente cliente = buscarClienteOuNulo(dto.clienteId());
 
-        if (dto.clienteId() != null) {
-            cliente = clienteRepository.findById(dto.clienteId())
-                    .orElseThrow(() ->
-                            new RecursoNaoEncontradoException(
-                                    "Cliente não encontrado."
-                            )
-                    );
-        }
+        BigDecimal valorPago = dto.valorPago() != null
+                ? dto.valorPago()
+                : BigDecimal.ZERO;
+
+        validarValorPago(valorPago, dto.valor());
 
         Venda venda = new Venda();
 
@@ -73,6 +67,7 @@ public class VendaService {
         venda.setAparelho(dto.aparelho());
         venda.setImei(dto.imei());
         venda.setValor(dto.valor());
+        venda.setValorPago(valorPago);
         venda.setFormaPagamento(dto.formaPagamento());
         venda.setDataVenda(LocalDateTime.now());
 
@@ -98,34 +93,50 @@ public class VendaService {
         return converterParaResponse(vendaSalva);
     }
 
+    @Transactional
     public VendaResponseDTO atualizar(
             Long id,
             VendaRequestDTO dto
     ) {
 
-        Venda venda = vendaRepository.findById(id)
-                .orElseThrow(() ->
-                        new RecursoNaoEncontradoException(
-                                "Venda não encontrada."
-                        )
-                );
+        Venda venda = buscarVendaOuFalhar(id);
 
-        Cliente cliente = null;
+        Cliente cliente = buscarClienteOuNulo(dto.clienteId());
 
-        if (dto.clienteId() != null) {
-            cliente = clienteRepository.findById(dto.clienteId())
-                    .orElseThrow(() ->
-                            new RecursoNaoEncontradoException(
-                                    "Cliente não encontrado."
-                            )
-                    );
-        }
+        BigDecimal valorPago = dto.valorPago() != null
+                ? dto.valorPago()
+                : BigDecimal.ZERO;
+
+        validarValorPago(valorPago, dto.valor());
 
         venda.setCliente(cliente);
         venda.setAparelho(dto.aparelho());
         venda.setImei(dto.imei());
         venda.setValor(dto.valor());
+        venda.setValorPago(valorPago);
         venda.setFormaPagamento(dto.formaPagamento());
+
+        Venda vendaAtualizada = vendaRepository.save(venda);
+
+        return converterParaResponse(vendaAtualizada);
+    }
+
+    @Transactional
+    public VendaResponseDTO registrarPagamento(
+            Long id,
+            RegistrarPagamentoDTO dto
+    ) {
+
+        Venda venda = buscarVendaOuFalhar(id);
+
+        BigDecimal novoValorPago =
+                venda.getValorPago().add(dto.valor());
+
+        if (novoValorPago.compareTo(venda.getValor()) > 0) {
+            novoValorPago = venda.getValor();
+        }
+
+        venda.setValorPago(novoValorPago);
 
         Venda vendaAtualizada = vendaRepository.save(venda);
 
@@ -134,17 +145,60 @@ public class VendaService {
 
     public void remover(Long id) {
 
-        Venda venda = vendaRepository.findById(id)
+        Venda venda = buscarVendaOuFalhar(id);
+
+        vendaRepository.delete(venda);
+    }
+
+    private Venda buscarVendaOuFalhar(Long id) {
+        return vendaRepository.findById(id)
                 .orElseThrow(() ->
                         new RecursoNaoEncontradoException(
                                 "Venda não encontrada."
                         )
                 );
+    }
 
-        vendaRepository.delete(venda);
+    private Cliente buscarClienteOuNulo(Long clienteId) {
+
+        if (clienteId == null) {
+            return null;
+        }
+
+        return clienteRepository.findById(clienteId)
+                .orElseThrow(() ->
+                        new RecursoNaoEncontradoException(
+                                "Cliente não encontrado."
+                        )
+                );
+    }
+
+    private void validarValorPago(BigDecimal valorPago, BigDecimal valor) {
+        if (valorPago.compareTo(valor) > 0) {
+            throw new IllegalArgumentException(
+                    "O valor pago não pode ser maior que o valor da venda."
+            );
+        }
     }
 
     private VendaResponseDTO converterParaResponse(Venda venda) {
+
+        BigDecimal valorPago = venda.getValorPago() != null
+                ? venda.getValorPago()
+                : BigDecimal.ZERO;
+
+        BigDecimal valorRestante =
+                venda.getValor().subtract(valorPago);
+
+        String statusPagamento;
+
+        if (valorRestante.compareTo(BigDecimal.ZERO) <= 0) {
+            statusPagamento = "PAGO";
+        } else if (valorPago.compareTo(BigDecimal.ZERO) > 0) {
+            statusPagamento = "PARCIAL";
+        } else {
+            statusPagamento = "PENDENTE";
+        }
 
         return new VendaResponseDTO(
                 venda.getId(),
@@ -154,6 +208,9 @@ public class VendaService {
                 venda.getAparelho(),
                 venda.getImei(),
                 venda.getValor(),
+                valorPago,
+                valorRestante,
+                statusPagamento,
                 venda.getFormaPagamento(),
                 venda.getDataVenda()
         );

@@ -19,6 +19,9 @@ public record VendaRequestDTO(
         @DecimalMin(value = "0.0", message = "O valor não pode ser negativo.")
         BigDecimal valor,
 
+        @DecimalMin(value = "0.0", message = "O valor pago não pode ser negativo.")
+        BigDecimal valorPago,
+
         @NotBlank(message = "A forma de pagamento é obrigatória.")
         String formaPagamento
 
