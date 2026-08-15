@@ -3,6 +3,7 @@ package com.loja.allanassistencia.ordemservico.service;
 import com.loja.allanassistencia.configuracao.entity.ConfiguracaoAssistencia;
 import com.loja.allanassistencia.configuracao.service.ConfiguracaoAssistenciaService;
 import com.loja.allanassistencia.exception.RecursoNaoEncontradoException;
+import com.loja.allanassistencia.ordemservico.dto.ComprovanteRequestDTO;
 import com.loja.allanassistencia.ordemservico.entity.OrdemServico;
 import com.loja.allanassistencia.ordemservico.repository.OrdemServicoRepository;
 import com.openhtmltopdf.pdfboxout.PdfRendererBuilder;
@@ -11,6 +12,7 @@ import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
 import java.io.ByteArrayOutputStream;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
@@ -31,28 +33,45 @@ public class ComprovantePdfService {
         this.templateEngine = templateEngine;
     }
 
-    public byte[] gerarPdf(Long ordemServicoId) {
+    public byte[] gerarPdf(Long ordemServicoId, ComprovanteRequestDTO dto) {
 
         OrdemServico ordem = ordemServicoRepository.findById(ordemServicoId)
                 .orElseThrow(() -> new RecursoNaoEncontradoException("Ordem de serviço não encontrada."));
 
         ConfiguracaoAssistencia config = configuracaoService.buscar();
 
+        // Usa o valor enviado pelo técnico na hora de gerar; se não vier, cai pro que já está salvo na OS
+        String nomeProduto = valorOuPadrao(dto != null ? dto.nomeProduto() : null, ordem.getAparelho());
+        String nomeCliente = valorOuPadrao(dto != null ? dto.nomeCliente() : null, ordem.getCliente().getNome());
+        String servicoRealizado = valorOuPadrao(dto != null ? dto.servicoRealizado() : null, ordem.getServicoRealizado());
+        BigDecimal valor = (dto != null && dto.valor() != null) ? dto.valor() : ordem.getValor();
+        Integer garantiaDias = (dto != null && dto.garantiaDias() != null) ? dto.garantiaDias() : ordem.getGarantiaDias();
+
+        LocalDate hoje = LocalDate.now();
+        boolean temGarantia = garantiaDias != null && garantiaDias > 0;
+        LocalDate garantiaFim = temGarantia ? hoje.plusDays(garantiaDias) : null;
+
         Context context = new Context();
         context.setVariable("nomeFantasia", config.getNomeFantasia());
         context.setVariable("endereco", config.getEndereco());
         context.setVariable("telefone", config.getTelefone());
-        context.setVariable("corPrimaria", config.getCorPrimaria());
+        context.setVariable("corPrimaria", corOuPadrao(config.getCorPrimaria()));
         context.setVariable("logoUrl", config.getLogoUrl());
         context.setVariable("rodapeTexto", config.getRodapeTexto());
 
-        context.setVariable("nomeProduto", ordem.getAparelho());
-        context.setVariable("nomeCliente", ordem.getCliente().getNome());
-        context.setVariable("valor", ordem.getValor());
-        context.setVariable("garantiaDias", ordem.getGarantiaDias());
-        context.setVariable("garantiaInicio", formatar(ordem.getGarantiaInicio()));
-        context.setVariable("garantiaFim", formatar(ordem.getGarantiaFim()));
-        context.setVariable("servicoRealizado", ordem.getServicoRealizado());
+        context.setVariable("numeroOs", ordem.getId());
+        context.setVariable("dataEmissao", hoje.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+        context.setVariable("nomeProduto", nomeProduto);
+        context.setVariable("nomeCliente", nomeCliente);
+        context.setVariable("defeito", ordem.getDefeito());
+        context.setVariable("servicoRealizado", servicoRealizado);
+        context.setVariable("peca", ordem.getPeca());
+        context.setVariable("valor", valor);
+
+        context.setVariable("temGarantia", temGarantia);
+        context.setVariable("garantiaDias", garantiaDias);
+        context.setVariable("garantiaInicio", hoje.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+        context.setVariable("garantiaFim", garantiaFim != null ? garantiaFim.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")) : null);
 
         String html = templateEngine.process("comprovante", context);
 
@@ -68,7 +87,11 @@ public class ComprovantePdfService {
         }
     }
 
-    private String formatar(LocalDate data) {
-        return data != null ? data.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")) : "-";
+    private String valorOuPadrao(String valor, String padrao) {
+        return (valor != null && !valor.isBlank()) ? valor : padrao;
+    }
+
+    private String corOuPadrao(String cor) {
+        return (cor != null && !cor.isBlank()) ? cor : "#1e3a8a";
     }
 }

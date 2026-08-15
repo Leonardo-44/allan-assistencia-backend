@@ -1,5 +1,6 @@
 package com.loja.allanassistencia.ordemservico.controller;
 
+import com.loja.allanassistencia.ordemservico.dto.ComprovanteRequestDTO;
 import com.loja.allanassistencia.ordemservico.dto.GarantiaResponseDTO;
 import com.loja.allanassistencia.ordemservico.dto.OrdemServicoRequestDTO;
 import com.loja.allanassistencia.ordemservico.dto.OrdemServicoResponseDTO;
@@ -67,9 +68,12 @@ public class OrdemServicoController {
         return ordemServicoService.verificarGarantia(id);
     }
 
-    @GetMapping("/{id}/comprovante-pdf")
-    public ResponseEntity<byte[]> gerarComprovantePdf(@PathVariable Long id) {
-        byte[] pdf = comprovantePdfService.gerarPdf(id);
+    @PostMapping("/{id}/comprovante-pdf")
+    public ResponseEntity<byte[]> gerarComprovantePdf(
+            @PathVariable Long id,
+            @RequestBody(required = false) ComprovanteRequestDTO dto
+    ) {
+        byte[] pdf = comprovantePdfService.gerarPdf(id, dto);
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=comprovante-" + id + ".pdf")
                 .contentType(MediaType.APPLICATION_PDF)
