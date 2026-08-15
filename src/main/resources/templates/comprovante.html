@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; color: #222; }
+        .header { border-bottom: 3px solid #1e3a8a; padding-bottom: 15px; display: flex; justify-content: space-between; align-items: center; }
+        .header img { max-height: 60px; }
+        .titulo { color: #1e3a8a; font-size: 22px; margin-top: 20px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        td { padding: 8px 0; border-bottom: 1px solid #eee; }
+        .label { color: #666; width: 200px; }
+        .valor { font-weight: bold; font-size: 20px; color: #1e3a8a; }
+        .garantia { background: #f0f4ff; padding: 12px; margin-top: 20px; border-radius: 6px; }
+        .rodape { margin-top: 40px; font-size: 11px; color: #888; }
+    </style>
+</head>
+<body>
+<div class="header">
+    <div>
+        <h2 th:text="${nomeFantasia}"></h2>
+        <p th:text="${endereco}"></p>
+        <p th:text="${telefone}"></p>
+    </div>
+    <img th:if="${logoUrl}" th:src="${logoUrl}" />
+</div>
+
+<div class="titulo">Comprovante de Serviço</div>
+
+<table>
+    <tr><td class="label">Produto</td><td th:text="${nomeProduto}"></td></tr>
+    <tr><td class="label">Cliente</td><td th:text="${nomeCliente}"></td></tr>
+    <tr><td class="label">Serviço realizado</td><td th:text="${servicoRealizado}"></td></tr>
+    <tr><td class="label">Valor</td><td class="valor" th:text="'R$ ' + ${#numbers.formatDecimal(valor, 1, 2)}"></td></tr>
+</table>
+
+<div class="garantia" th:if="${garantiaDias} != null and ${garantiaDias} > 0">
+    Garantia de <b th:text="${garantiaDias}"></b> dias —
+    de <b th:text="${garantiaInicio}"></b> até <b th:text="${garantiaFim}"></b>
+</div>
+
+<div class="rodape" th:text="${rodapeTexto}"></div>
+</body>
+</html>

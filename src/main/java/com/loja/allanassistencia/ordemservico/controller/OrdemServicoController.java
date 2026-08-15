@@ -3,8 +3,12 @@ package com.loja.allanassistencia.ordemservico.controller;
 import com.loja.allanassistencia.ordemservico.dto.GarantiaResponseDTO;
 import com.loja.allanassistencia.ordemservico.dto.OrdemServicoRequestDTO;
 import com.loja.allanassistencia.ordemservico.dto.OrdemServicoResponseDTO;
+import com.loja.allanassistencia.ordemservico.service.ComprovantePdfService;
 import com.loja.allanassistencia.ordemservico.service.OrdemServicoService;
 import jakarta.validation.Valid;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -14,11 +18,14 @@ import java.util.List;
 public class OrdemServicoController {
 
     private final OrdemServicoService ordemServicoService;
+    private final ComprovantePdfService comprovantePdfService;
 
     public OrdemServicoController(
-            OrdemServicoService ordemServicoService
+            OrdemServicoService ordemServicoService,
+            ComprovantePdfService comprovantePdfService
     ) {
         this.ordemServicoService = ordemServicoService;
+        this.comprovantePdfService = comprovantePdfService;
     }
 
     @GetMapping
@@ -58,6 +65,15 @@ public class OrdemServicoController {
             @PathVariable Long id
     ) {
         return ordemServicoService.verificarGarantia(id);
+    }
+
+    @GetMapping("/{id}/comprovante-pdf")
+    public ResponseEntity<byte[]> gerarComprovantePdf(@PathVariable Long id) {
+        byte[] pdf = comprovantePdfService.gerarPdf(id);
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=comprovante-" + id + ".pdf")
+                .contentType(MediaType.APPLICATION_PDF)
+                .body(pdf);
     }
 
 }
