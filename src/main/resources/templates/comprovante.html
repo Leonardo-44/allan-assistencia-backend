@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 
@@ -653,9 +652,10 @@
 
             <span
                     class="kpi-value"
-                    th:text="'R$ ' + ${#numbers.formatDecimal(valor, 1, 2)}"
+                    th:text="${valor != null ? 'R$ ' + #numbers.formatDecimal(valor, 1, 2) : 'R$ 0,00'}"
             >
-                </span>
+                R$ 0,00
+            </span>
 
             <div class="kpi-sub">
                 Valor total do atendimento

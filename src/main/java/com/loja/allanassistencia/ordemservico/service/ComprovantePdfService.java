@@ -35,63 +35,258 @@ public class ComprovantePdfService {
 
     public byte[] gerarPdf(Long ordemServicoId, ComprovanteRequestDTO dto) {
 
+        // =====================================================
+        // BUSCAR OS
+        // =====================================================
+
         OrdemServico ordem = ordemServicoRepository.findById(ordemServicoId)
-                .orElseThrow(() -> new RecursoNaoEncontradoException("Ordem de serviço não encontrada."));
+                .orElseThrow(() ->
+                        new RecursoNaoEncontradoException(
+                                "Ordem de serviço não encontrada."
+                        )
+                );
+
+        // =====================================================
+        // BUSCAR CONFIGURAÇÕES DA ASSISTÊNCIA
+        // =====================================================
 
         ConfiguracaoAssistencia config = configuracaoService.buscar();
 
-        // Usa o valor enviado pelo técnico na hora de gerar; se não vier, cai pro que já está salvo na OS
-        String nomeProduto = valorOuPadrao(dto != null ? dto.nomeProduto() : null, ordem.getAparelho());
-        String nomeCliente = valorOuPadrao(dto != null ? dto.nomeCliente() : null, ordem.getCliente().getNome());
-        String servicoRealizado = valorOuPadrao(dto != null ? dto.servicoRealizado() : null, ordem.getServicoRealizado());
-        BigDecimal valor = (dto != null && dto.valor() != null) ? dto.valor() : ordem.getValor();
-        Integer garantiaDias = (dto != null && dto.garantiaDias() != null) ? dto.garantiaDias() : ordem.getGarantiaDias();
+        // =====================================================
+        // DADOS DA OS
+        // =====================================================
+
+        String nomeProduto = valorOuPadrao(
+                dto != null ? dto.nomeProduto() : null,
+                ordem.getAparelho()
+        );
+
+        String nomeCliente = valorOuPadrao(
+                dto != null ? dto.nomeCliente() : null,
+                ordem.getCliente().getNome()
+        );
+
+        String servicoRealizado = valorOuPadrao(
+                dto != null ? dto.servicoRealizado() : null,
+                ordem.getServicoRealizado()
+        );
+
+        BigDecimal valor = dto != null && dto.valor() != null
+                ? dto.valor()
+                : ordem.getValor();
+
+        Integer garantiaDias = dto != null && dto.garantiaDias() != null
+                ? dto.garantiaDias()
+                : ordem.getGarantiaDias();
+
+        // Evita valor null no PDF
+        if (valor == null) {
+            valor = BigDecimal.ZERO;
+        }
+
+        // Evita garantia null
+        if (garantiaDias == null) {
+            garantiaDias = 0;
+        }
+
+        // =====================================================
+        // GARANTIA
+        // =====================================================
 
         LocalDate hoje = LocalDate.now();
-        boolean temGarantia = garantiaDias != null && garantiaDias > 0;
-        LocalDate garantiaFim = temGarantia ? hoje.plusDays(garantiaDias) : null;
+
+        boolean temGarantia = garantiaDias > 0;
+
+        LocalDate garantiaFim = temGarantia
+                ? hoje.plusDays(garantiaDias)
+                : null;
+
+        DateTimeFormatter formatter =
+                DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
+        // =====================================================
+        // THYMELEAF
+        // =====================================================
 
         Context context = new Context();
-        context.setVariable("nomeFantasia", config.getNomeFantasia());
-        context.setVariable("endereco", config.getEndereco());
-        context.setVariable("telefone", config.getTelefone());
-        context.setVariable("corPrimaria", corOuPadrao(config.getCorPrimaria()));
-        context.setVariable("logoUrl", config.getLogoUrl());
-        context.setVariable("rodapeTexto", config.getRodapeTexto());
 
-        context.setVariable("numeroOs", ordem.getId());
-        context.setVariable("dataEmissao", hoje.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
-        context.setVariable("nomeProduto", nomeProduto);
-        context.setVariable("nomeCliente", nomeCliente);
-        context.setVariable("defeito", ordem.getDefeito());
-        context.setVariable("servicoRealizado", servicoRealizado);
-        context.setVariable("peca", ordem.getPeca());
-        context.setVariable("valor", valor);
+        // -----------------------------------------------------
+        // DADOS DA ASSISTÊNCIA
+        // -----------------------------------------------------
 
-        context.setVariable("temGarantia", temGarantia);
-        context.setVariable("garantiaDias", garantiaDias);
-        context.setVariable("garantiaInicio", hoje.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
-        context.setVariable("garantiaFim", garantiaFim != null ? garantiaFim.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")) : null);
+        String nomeFantasia = valorOuPadrao(
+                config.getNomeFantasia(),
+                "Assistência Técnica"
+        );
 
-        String html = templateEngine.process("comprovante", context);
+        context.setVariable(
+                "nomeFantasia",
+                nomeFantasia
+        );
 
-        try (ByteArrayOutputStream os = new ByteArrayOutputStream()) {
-            PdfRendererBuilder builder = new PdfRendererBuilder();
+        context.setVariable(
+                "endereco",
+                config.getEndereco()
+        );
+
+        context.setVariable(
+                "telefone",
+                config.getTelefone()
+        );
+
+        context.setVariable(
+                "corPrimaria",
+                corOuPadrao(config.getCorPrimaria())
+        );
+
+        context.setVariable(
+                "logoUrl",
+                config.getLogoUrl()
+        );
+
+        context.setVariable(
+                "rodapeTexto",
+                config.getRodapeTexto()
+        );
+
+        // -----------------------------------------------------
+        // DADOS DA OS
+        // -----------------------------------------------------
+
+        context.setVariable(
+                "numeroOs",
+                ordem.getId()
+        );
+
+        context.setVariable(
+                "dataEmissao",
+                hoje.format(formatter)
+        );
+
+        context.setVariable(
+                "nomeProduto",
+                nomeProduto
+        );
+
+        context.setVariable(
+                "nomeCliente",
+                nomeCliente
+        );
+
+        context.setVariable(
+                "defeito",
+                ordem.getDefeito()
+        );
+
+        context.setVariable(
+                "servicoRealizado",
+                servicoRealizado
+        );
+
+        context.setVariable(
+                "peca",
+                ordem.getPeca()
+        );
+
+        // IMPORTANTE
+        context.setVariable(
+                "valor",
+                valor
+        );
+
+        // -----------------------------------------------------
+        // GARANTIA
+        // -----------------------------------------------------
+
+        context.setVariable(
+                "temGarantia",
+                temGarantia
+        );
+
+        context.setVariable(
+                "garantiaDias",
+                garantiaDias
+        );
+
+        context.setVariable(
+                "garantiaInicio",
+                hoje.format(formatter)
+        );
+
+        context.setVariable(
+                "garantiaFim",
+                garantiaFim != null
+                        ? garantiaFim.format(formatter)
+                        : null
+        );
+
+        // =====================================================
+        // GERAR HTML
+        // =====================================================
+
+        String html = templateEngine.process(
+                "comprovante",
+                context
+        );
+
+        // =====================================================
+        // GERAR PDF
+        // =====================================================
+
+        try (ByteArrayOutputStream os =
+                     new ByteArrayOutputStream()) {
+
+            PdfRendererBuilder builder =
+                    new PdfRendererBuilder();
+
             builder.useFastMode();
-            builder.withHtmlContent(html, null);
+
+            builder.withHtmlContent(
+                    html,
+                    null
+            );
+
             builder.toStream(os);
+
             builder.run();
+
             return os.toByteArray();
+
         } catch (Exception e) {
-            throw new RuntimeException("Erro ao gerar PDF do comprovante", e);
+
+            throw new RuntimeException(
+                    "Erro ao gerar PDF do comprovante",
+                    e
+            );
         }
     }
 
-    private String valorOuPadrao(String valor, String padrao) {
-        return (valor != null && !valor.isBlank()) ? valor : padrao;
+    // =========================================================
+    // MÉTODOS AUXILIARES
+    // =========================================================
+
+    private String valorOuPadrao(
+            String valor,
+            String padrao
+    ) {
+
+        if (valor != null && !valor.isBlank()) {
+            return valor;
+        }
+
+        if (padrao != null && !padrao.isBlank()) {
+            return padrao;
+        }
+
+        return "";
     }
 
     private String corOuPadrao(String cor) {
-        return (cor != null && !cor.isBlank()) ? cor : "#1e3a8a";
+
+        if (cor != null && !cor.isBlank()) {
+            return cor;
+        }
+
+        return "#1e3a8a";
     }
 }
