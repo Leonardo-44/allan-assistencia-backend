@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <style>
+    <style th:inline="css">
         @page { margin: 0; }
         * { box-sizing: border-box; }
 
@@ -15,7 +15,6 @@
             background: #ffffff;
         }
 
-        /* Faixa superior, mesmo acento do painel */
         .topbar {
             height: 5px;
             background: [[${corPrimaria}]];
@@ -65,7 +64,7 @@
             font-size: 12px;
             font-weight: 700;
             color: [[${corPrimaria}]];
-            background: color-mix(in srgb, [[${corPrimaria}]] 12%, white);
+            background: #eff6ff;
             padding: 6px 14px;
             border-radius: 999px;
             text-transform: uppercase;
@@ -90,7 +89,6 @@
             margin: 0 0 10px;
         }
 
-        /* Card no mesmo estilo do painel: fundo levemente cinza, borda sutil, cantos arredondados */
         .card {
             background: #f8fafc;
             border: 1px solid #e2e8f0;
@@ -122,7 +120,6 @@
 
         .info-item.full { grid-column: 1 / -1; }
 
-        /* Linha de KPIs (Valor e Garantia), como os cards do dashboard */
         .kpi-row {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -150,27 +147,26 @@
             display: block;
         }
 
-        .kpi-card.destaque .kpi-label { color: rgba(255,255,255,0.85); }
-        .kpi-card:not(.destaque) .kpi-label { color: #94a3b8; }
-
         .kpi-card .kpi-value {
             font-size: 21px;
             font-weight: 700;
             font-family: 'Courier New', monospace;
         }
 
-        .kpi-card.destaque .kpi-value { color: #ffffff; }
-        .kpi-card:not(.destaque) .kpi-value { color: #0f172a; }
-
         .kpi-card .kpi-sub {
             margin-top: 6px;
             font-size: 10.5px;
         }
 
-        .kpi-card.destaque .kpi-sub { color: rgba(255,255,255,0.75); }
-        .kpi-card:not(.destaque) .kpi-sub { color: #64748b; }
+        /* Cores sólidas (sem rgba, que o openhtmltopdf não interpreta bem) */
+        .kpi-card.destaque .kpi-label { color: #dbeafe; }
+        .kpi-card.destaque .kpi-value { color: #ffffff; }
+        .kpi-card.destaque .kpi-sub   { color: #bfdbfe; }
 
-        /* Pill de status (garantia ativa / sem garantia), igual ao status-tab do site */
+        .kpi-card:not(.destaque) .kpi-label { color: #94a3b8; }
+        .kpi-card:not(.destaque) .kpi-value { color: #0f172a; }
+        .kpi-card:not(.destaque) .kpi-sub   { color: #64748b; }
+
         .status-pill {
             display: inline-flex;
             align-items: center;
@@ -231,8 +227,6 @@
             text-align: center;
             line-height: 1.6;
         }
-
-        .stack { margin-top: 18px; }
     </style>
 </head>
 <body>
