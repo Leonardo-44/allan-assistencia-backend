@@ -1,135 +1,255 @@
+# Template HTML — Comprovante de Serviço
+
+```html
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+
 <head>
+
+    <meta charset="UTF-8">
+
     <style th:inline="css">
-        @page { margin: 0; }
-        * { box-sizing: border-box; }
+
+        @page {
+            margin: 0;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
 
         body {
             font-family: 'Helvetica Neue', Arial, sans-serif;
             margin: 0;
-            padding: 46px 46px 36px;
+            padding: 0 46px 36px;
             color: #0f172a;
             font-size: 13px;
             line-height: 1.5;
             background: #ffffff;
         }
 
+        /* =========================================================
+           BARRA SUPERIOR
+        ========================================================= */
+
         .topbar {
-            height: 5px;
+            height: 7px;
             background: [[${corPrimaria}]];
-            margin: -46px -46px 28px;
-            border-radius: 0 0 4px 4px;
+            margin: 0 -46px 30px;
         }
 
+        /* =========================================================
+           CABEÇALHO DA ASSISTÊNCIA
+        ========================================================= */
+
         .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            padding-bottom: 20px;
+            display: table;
+            width: 100%;
+            padding-bottom: 22px;
             margin-bottom: 24px;
             border-bottom: 1px solid #e2e8f0;
         }
 
-        .header-info h1 {
-            margin: 0 0 4px;
-            font-size: 19px;
-            font-weight: 700;
-            color: #0f172a;
-            letter-spacing: -0.3px;
+        .header-left {
+            display: table-cell;
+            vertical-align: middle;
+            width: 70%;
         }
 
-        .header-info p {
-            margin: 1px 0;
-            font-size: 11.5px;
+        .header-right {
+            display: table-cell;
+            vertical-align: middle;
+            text-align: right;
+            width: 30%;
+        }
+
+        /* Nome da assistência */
+
+        .brand-name {
+            margin: 0 0 5px;
+            font-size: 22px;
+            font-weight: 800;
+            color: #0f172a;
+            letter-spacing: -0.5px;
+        }
+
+        .brand-subtitle {
+            margin: 0 0 8px;
+            font-size: 11px;
+            font-weight: 600;
+            color: [[${corPrimaria}]];
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .contact-info {
+            margin: 2px 0;
+            font-size: 10.5px;
             color: #64748b;
         }
 
-        .header-logo img {
-            max-height: 52px;
-            max-width: 160px;
+        /* Logo */
+
+        .logo-container {
+            display: inline-block;
+            padding: 8px;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            background: #ffffff;
         }
 
-        .doc-title-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 22px;
+        .header-logo {
+            max-width: 125px;
+            max-height: 65px;
+            display: block;
         }
 
-        .doc-title {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 12px;
-            font-weight: 700;
-            color: [[${corPrimaria}]];
-            background: #eff6ff;
-            padding: 6px 14px;
-            border-radius: 999px;
+        /* Caso não exista logo */
+
+        .logo-placeholder {
+            width: 125px;
+            height: 65px;
+            text-align: center;
+            vertical-align: middle;
+            padding-top: 21px;
+            font-size: 9px;
+            color: #94a3b8;
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
 
-        .doc-meta {
-            text-align: right;
-            font-size: 11.5px;
-            color: #64748b;
-            font-family: 'Courier New', monospace;
+        /* =========================================================
+           TÍTULO DO DOCUMENTO
+        ========================================================= */
+
+        .doc-title-row {
+            display: table;
+            width: 100%;
+            margin-bottom: 24px;
         }
 
-        .doc-meta b { color: #0f172a; }
+        .doc-title-cell {
+            display: table-cell;
+            vertical-align: middle;
+            width: 55%;
+        }
+
+        .doc-meta-cell {
+            display: table-cell;
+            vertical-align: middle;
+            width: 45%;
+            text-align: right;
+        }
+
+        .doc-title {
+            display: inline-block;
+            font-size: 11px;
+            font-weight: 800;
+            color: [[${corPrimaria}]];
+            background: #eff6ff;
+            padding: 7px 14px;
+            border-radius: 999px;
+            text-transform: uppercase;
+            letter-spacing: 0.7px;
+        }
+
+        .doc-meta {
+            font-size: 10.5px;
+            color: #64748b;
+        }
+
+        .doc-meta b {
+            color: #0f172a;
+        }
+
+        /* =========================================================
+           SEÇÕES
+        ========================================================= */
 
         .section-title {
-            font-size: 10.5px;
-            font-weight: 700;
+            font-size: 10px;
+            font-weight: 800;
             text-transform: uppercase;
-            letter-spacing: 0.6px;
+            letter-spacing: 0.8px;
             color: #94a3b8;
             margin: 0 0 10px;
         }
+
+        /* =========================================================
+           CARD DE INFORMAÇÕES
+        ========================================================= */
 
         .card {
             background: #f8fafc;
             border: 1px solid #e2e8f0;
             border-radius: 14px;
-            padding: 18px 20px;
+            padding: 19px 21px;
         }
 
         .info-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 14px 24px;
+            display: table;
+            width: 100%;
         }
 
-        .info-item .label {
+        .info-row {
+            display: table-row;
+        }
+
+        .info-item {
+            display: table-cell;
+            width: 50%;
+            padding: 6px 18px 8px 0;
+            vertical-align: top;
+        }
+
+        .info-item.full {
+            width: 100%;
+        }
+
+        .label {
             display: block;
-            font-size: 10px;
+            font-size: 9.5px;
             color: #94a3b8;
             text-transform: uppercase;
-            letter-spacing: 0.4px;
+            letter-spacing: 0.5px;
             margin-bottom: 3px;
-            font-weight: 600;
+            font-weight: 700;
         }
 
-        .info-item .value {
-            font-size: 13.5px;
+        .value {
+            font-size: 13px;
             color: #0f172a;
             font-weight: 600;
         }
 
-        .info-item.full { grid-column: 1 / -1; }
+        /* =========================================================
+           RESUMO FINANCEIRO / GARANTIA
+        ========================================================= */
 
         .kpi-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 14px;
+            display: table;
+            width: 100%;
             margin-top: 18px;
         }
 
+        .kpi-cell {
+            display: table-cell;
+            width: 50%;
+            vertical-align: top;
+        }
+
+        .kpi-cell:first-child {
+            padding-right: 7px;
+        }
+
+        .kpi-cell:last-child {
+            padding-left: 7px;
+        }
+
         .kpi-card {
+            min-height: 105px;
             border-radius: 14px;
-            padding: 16px 18px;
+            padding: 17px 19px;
             border: 1px solid #e2e8f0;
         }
 
@@ -138,43 +258,60 @@
             border-color: [[${corPrimaria}]];
         }
 
-        .kpi-card .kpi-label {
-            font-size: 10.5px;
-            text-transform: uppercase;
-            letter-spacing: 0.4px;
-            font-weight: 600;
-            margin-bottom: 6px;
+        .kpi-label {
             display: block;
+            font-size: 9.5px;
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+            font-weight: 700;
+            margin-bottom: 6px;
         }
 
-        .kpi-card .kpi-value {
+        .kpi-value {
             font-size: 21px;
-            font-weight: 700;
+            font-weight: 800;
             font-family: 'Courier New', monospace;
         }
 
-        .kpi-card .kpi-sub {
+        .kpi-sub {
             margin-top: 6px;
-            font-size: 10.5px;
+            font-size: 10px;
         }
 
-        /* Cores sólidas (sem rgba, que o openhtmltopdf não interpreta bem) */
-        .kpi-card.destaque .kpi-label { color: #dbeafe; }
-        .kpi-card.destaque .kpi-value { color: #ffffff; }
-        .kpi-card.destaque .kpi-sub   { color: #bfdbfe; }
+        .kpi-card.destaque .kpi-label {
+            color: #dbeafe;
+        }
 
-        .kpi-card:not(.destaque) .kpi-label { color: #94a3b8; }
-        .kpi-card:not(.destaque) .kpi-value { color: #0f172a; }
-        .kpi-card:not(.destaque) .kpi-sub   { color: #64748b; }
+        .kpi-card.destaque .kpi-value {
+            color: #ffffff;
+        }
+
+        .kpi-card.destaque .kpi-sub {
+            color: #bfdbfe;
+        }
+
+        .kpi-card:not(.destaque) .kpi-label {
+            color: #94a3b8;
+        }
+
+        .kpi-card:not(.destaque) .kpi-value {
+            color: #0f172a;
+        }
+
+        .kpi-card:not(.destaque) .kpi-sub {
+            color: #64748b;
+        }
+
+        /* =========================================================
+           STATUS DA GARANTIA
+        ========================================================= */
 
         .status-pill {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            padding: 4px 12px;
+            display: inline-block;
+            padding: 5px 12px;
             border-radius: 999px;
-            font-size: 10.5px;
-            font-weight: 700;
+            font-size: 10px;
+            font-weight: 800;
             text-transform: uppercase;
             letter-spacing: 0.3px;
         }
@@ -190,131 +327,481 @@
         }
 
         .aviso-garantia {
-            margin-top: 10px;
-            font-size: 11px;
+            margin-top: 9px;
+            font-size: 10.5px;
             color: #64748b;
             line-height: 1.6;
         }
 
+        /* =========================================================
+           ASSINATURAS
+        ========================================================= */
+
         .assinaturas {
-            display: flex;
-            justify-content: space-between;
-            gap: 40px;
-            margin-top: 56px;
+            display: table;
+            width: 100%;
+            margin-top: 58px;
         }
 
         .assinatura {
-            flex: 1;
+            display: table-cell;
+            width: 50%;
             text-align: center;
+            padding: 0 20px;
         }
 
         .assinatura .linha {
             border-top: 1px solid #cbd5e1;
-            margin-bottom: 6px;
+            margin-bottom: 7px;
         }
 
         .assinatura .nome {
-            font-size: 11.5px;
+            font-size: 10.5px;
             color: #475569;
+            font-weight: 600;
         }
 
+        .assinatura .tipo {
+            margin-top: 2px;
+            font-size: 9px;
+            color: #94a3b8;
+        }
+
+        /* =========================================================
+           RODAPÉ
+        ========================================================= */
+
         .footer {
-            margin-top: 36px;
+            margin-top: 38px;
             padding-top: 14px;
             border-top: 1px solid #e2e8f0;
-            font-size: 10px;
+            font-size: 9.5px;
             color: #94a3b8;
             text-align: center;
             line-height: 1.6;
         }
+
+        .footer p {
+            margin: 3px 0;
+        }
+
+        .footer-highlight {
+            color: #64748b;
+            font-weight: 600;
+        }
+
     </style>
+
 </head>
+
+
 <body>
+
+<!-- =========================================================
+     BARRA SUPERIOR
+========================================================== -->
 
 <div class="topbar"></div>
 
+
+<!-- =========================================================
+     CABEÇALHO
+========================================================== -->
+
 <div class="header">
-    <div class="header-info">
-        <h1 th:text="${nomeFantasia}">Nome da Assistência</h1>
-        <p th:if="${endereco}" th:text="${endereco}"></p>
-        <p th:if="${telefone}" th:text="'Tel: ' + ${telefone}"></p>
+
+    <div class="header-left">
+
+        <h1
+                class="brand-name"
+                th:text="${nomeFantasia}"
+        >
+            Nome da Assistência
+        </h1>
+
+        <div class="brand-subtitle">
+            Assistência Técnica
+        </div>
+
+        <p
+                class="contact-info"
+                th:if="${endereco}"
+                th:text="${endereco}"
+        ></p>
+
+        <p
+                class="contact-info"
+                th:if="${telefone}"
+                th:text="'Telefone: ' + ${telefone}"
+        ></p>
+
     </div>
-    <div class="header-logo" th:if="${logoUrl}">
-        <img th:src="${logoUrl}" />
+
+
+    <!-- LOGO -->
+
+    <div class="header-right">
+
+        <div
+                class="logo-container"
+                th:if="${logoUrl}"
+        >
+
+            <img
+                    class="header-logo"
+                    th:src="${logoUrl}"
+                    alt="Logo da assistência"
+            />
+
+        </div>
+
+
+        <!-- Fallback caso não tenha logo -->
+
+        <div
+                class="logo-container"
+                th:unless="${logoUrl}"
+        >
+
+            <div class="logo-placeholder">
+                Assistência Técnica
+            </div>
+
+        </div>
+
     </div>
+
 </div>
+
+
+<!-- =========================================================
+     IDENTIFICAÇÃO DO DOCUMENTO
+========================================================== -->
 
 <div class="doc-title-row">
-    <div class="doc-title">Comprovante de Serviço</div>
-    <div class="doc-meta">
-        OS <b th:text="'#' + ${numeroOs}"></b> · <b th:text="${dataEmissao}"></b>
+
+    <div class="doc-title-cell">
+
+        <div class="doc-title">
+            Comprovante de Serviço
+        </div>
+
     </div>
+
+
+    <div class="doc-meta-cell">
+
+        <div class="doc-meta">
+
+            OS
+            <b th:text="'#' + ${numeroOs}"></b>
+
+            &nbsp;·&nbsp;
+
+            <b th:text="${dataEmissao}"></b>
+
+        </div>
+
+    </div>
+
 </div>
 
-<div class="section-title">Dados do atendimento</div>
-<div class="card">
-    <div class="info-grid">
-        <div class="info-item">
-            <span class="label">Cliente</span>
-            <span class="value" th:text="${nomeCliente}"></span>
-        </div>
-        <div class="info-item">
-            <span class="label">Produto</span>
-            <span class="value" th:text="${nomeProduto}"></span>
-        </div>
-        <div class="info-item full" th:if="${defeito}">
-            <span class="label">Defeito relatado</span>
-            <span class="value" th:text="${defeito}"></span>
-        </div>
-        <div class="info-item full" th:if="${servicoRealizado}">
-            <span class="label">Serviço realizado</span>
-            <span class="value" th:text="${servicoRealizado}"></span>
-        </div>
-        <div class="info-item full" th:if="${peca}">
-            <span class="label">Peça utilizada</span>
-            <span class="value" th:text="${peca}"></span>
-        </div>
-    </div>
+
+<!-- =========================================================
+     DADOS DO ATENDIMENTO
+========================================================== -->
+
+<div class="section-title">
+    Dados do atendimento
 </div>
+
+
+<div class="card">
+
+    <div class="info-grid">
+
+
+        <!-- Cliente + Produto -->
+
+        <div class="info-row">
+
+            <div class="info-item">
+
+                    <span class="label">
+                        Cliente
+                    </span>
+
+                <span
+                        class="value"
+                        th:text="${nomeCliente}"
+                >
+                    </span>
+
+            </div>
+
+
+            <div class="info-item">
+
+                    <span class="label">
+                        Aparelho / Produto
+                    </span>
+
+                <span
+                        class="value"
+                        th:text="${nomeProduto}"
+                >
+                    </span>
+
+            </div>
+
+        </div>
+
+
+        <!-- Defeito -->
+
+        <div
+                class="info-row"
+                th:if="${defeito}"
+        >
+
+            <div
+                    class="info-item"
+                    colspan="2"
+            >
+
+                    <span class="label">
+                        Defeito relatado
+                    </span>
+
+                <span
+                        class="value"
+                        th:text="${defeito}"
+                >
+                    </span>
+
+            </div>
+
+        </div>
+
+
+        <!-- Serviço -->
+
+        <div
+                class="info-row"
+                th:if="${servicoRealizado}"
+        >
+
+            <div class="info-item">
+
+                    <span class="label">
+                        Serviço realizado
+                    </span>
+
+                <span
+                        class="value"
+                        th:text="${servicoRealizado}"
+                >
+                    </span>
+
+            </div>
+
+        </div>
+
+
+        <!-- Peça -->
+
+        <div
+                class="info-row"
+                th:if="${peca}"
+        >
+
+            <div class="info-item">
+
+                    <span class="label">
+                        Peça utilizada
+                    </span>
+
+                <span
+                        class="value"
+                        th:text="${peca}"
+                >
+                    </span>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =========================================================
+     VALOR E GARANTIA
+========================================================== -->
 
 <div class="kpi-row">
-    <div class="kpi-card destaque">
-        <span class="kpi-label">Valor do serviço</span>
-        <span class="kpi-value" th:text="'R$ ' + ${#numbers.formatDecimal(valor, 1, 2)}"></span>
-    </div>
 
-    <div class="kpi-card">
-        <span class="kpi-label">Garantia</span>
 
-        <div th:if="${temGarantia}">
-            <span class="status-pill ativa">Ativa · <span th:text="${garantiaDias}"></span> dias</span>
-            <div class="aviso-garantia">
-                Válida de <b th:text="${garantiaInicio}"></b> até <b th:text="${garantiaFim}"></b>.
-                Cobre exclusivamente o serviço/peça descritos acima.
+    <!-- Valor -->
+
+    <div class="kpi-cell">
+
+        <div class="kpi-card destaque">
+
+                <span class="kpi-label">
+                    Valor do serviço
+                </span>
+
+            <span
+                    class="kpi-value"
+                    th:text="'R$ ' + ${#numbers.formatDecimal(valor, 1, 2)}"
+            >
+                </span>
+
+            <div class="kpi-sub">
+                Valor total do atendimento
             </div>
+
         </div>
 
-        <div th:unless="${temGarantia}">
-            <span class="status-pill inativa">Sem garantia</span>
-        </div>
     </div>
+
+
+    <!-- Garantia -->
+
+    <div class="kpi-cell">
+
+        <div class="kpi-card">
+
+                <span class="kpi-label">
+                    Garantia
+                </span>
+
+
+            <div th:if="${temGarantia}">
+
+                    <span class="status-pill ativa">
+
+                        Garantia ativa ·
+
+                        <span
+                                th:text="${garantiaDias}"
+                        ></span>
+
+                        dias
+
+                    </span>
+
+
+                <div class="aviso-garantia">
+
+                    Válida de
+
+                    <b th:text="${garantiaInicio}"></b>
+
+                    até
+
+                    <b th:text="${garantiaFim}"></b>.
+
+                    Cobre exclusivamente o serviço e/ou
+                    peça descritos neste comprovante.
+
+                </div>
+
+            </div>
+
+
+            <div th:unless="${temGarantia}">
+
+                    <span class="status-pill inativa">
+                        Sem garantia
+                    </span>
+
+                <div class="aviso-garantia">
+                    Este atendimento não possui garantia registrada.
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
 </div>
+
+
+<!-- =========================================================
+     ASSINATURAS
+========================================================== -->
 
 <div class="assinaturas">
+
+
+    <!-- Assistência -->
+
     <div class="assinatura">
+
         <div class="linha"></div>
-        <div class="nome" th:text="${nomeFantasia}"></div>
+
+        <div
+                class="nome"
+                th:text="${nomeFantasia}"
+        >
+        </div>
+
+        <div class="tipo">
+            Responsável pela assistência
+        </div>
+
     </div>
+
+
+    <!-- Cliente -->
+
     <div class="assinatura">
+
         <div class="linha"></div>
-        <div class="nome" th:text="${nomeCliente}"></div>
+
+        <div
+                class="nome"
+                th:text="${nomeCliente}"
+        >
+        </div>
+
+        <div class="tipo">
+            Cliente
+        </div>
+
     </div>
+
 </div>
+
+
+<!-- =========================================================
+     RODAPÉ
+========================================================== -->
 
 <div class="footer">
-    <p th:if="${rodapeTexto}" th:text="${rodapeTexto}"></p>
-    <p>Guarde este comprovante — ele é necessário para acionar a garantia.</p>
+
+    <p
+            th:if="${rodapeTexto}"
+            th:text="${rodapeTexto}"
+    ></p>
+
+    <p class="footer-highlight">
+        Guarde este comprovante para futuras consultas.
+    </p>
+
+    <p>
+        Este documento comprova a realização do serviço
+        descrito acima.
+    </p>
+
 </div>
 
+
 </body>
+
 </html>
+```
