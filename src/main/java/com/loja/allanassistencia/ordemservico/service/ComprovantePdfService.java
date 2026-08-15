@@ -35,10 +35,6 @@ public class ComprovantePdfService {
 
     public byte[] gerarPdf(Long ordemServicoId, ComprovanteRequestDTO dto) {
 
-        // =====================================================
-        // BUSCAR OS
-        // =====================================================
-
         OrdemServico ordem = ordemServicoRepository.findById(ordemServicoId)
                 .orElseThrow(() ->
                         new RecursoNaoEncontradoException(
@@ -46,15 +42,7 @@ public class ComprovantePdfService {
                         )
                 );
 
-        // =====================================================
-        // BUSCAR CONFIGURAÇÕES DA ASSISTÊNCIA
-        // =====================================================
-
         ConfiguracaoAssistencia config = configuracaoService.buscar();
-
-        // =====================================================
-        // DADOS DA OS
-        // =====================================================
 
         String nomeProduto = valorOuPadrao(
                 dto != null ? dto.nomeProduto() : null,
@@ -71,57 +59,38 @@ public class ComprovantePdfService {
                 ordem.getServicoRealizado()
         );
 
-        BigDecimal valor = dto != null && dto.valor() != null
-                ? dto.valor()
-                : ordem.getValor();
+        BigDecimal valor =
+                dto != null && dto.valor() != null
+                        ? dto.valor()
+                        : ordem.getValor();
 
-        Integer garantiaDias = dto != null && dto.garantiaDias() != null
-                ? dto.garantiaDias()
-                : ordem.getGarantiaDias();
-
-        // Evita valor null no PDF
-        if (valor == null) {
-            valor = BigDecimal.ZERO;
-        }
-
-        // Evita garantia null
-        if (garantiaDias == null) {
-            garantiaDias = 0;
-        }
-
-        // =====================================================
-        // GARANTIA
-        // =====================================================
+        Integer garantiaDias =
+                dto != null && dto.garantiaDias() != null
+                        ? dto.garantiaDias()
+                        : ordem.getGarantiaDias();
 
         LocalDate hoje = LocalDate.now();
 
-        boolean temGarantia = garantiaDias > 0;
+        boolean temGarantia =
+                garantiaDias != null && garantiaDias > 0;
 
-        LocalDate garantiaFim = temGarantia
-                ? hoje.plusDays(garantiaDias)
-                : null;
+        LocalDate garantiaFim =
+                temGarantia
+                        ? hoje.plusDays(garantiaDias)
+                        : null;
 
         DateTimeFormatter formatter =
                 DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
-        // =====================================================
-        // THYMELEAF
-        // =====================================================
-
         Context context = new Context();
 
-        // -----------------------------------------------------
-        // DADOS DA ASSISTÊNCIA
-        // -----------------------------------------------------
-
-        String nomeFantasia = valorOuPadrao(
-                config.getNomeFantasia(),
-                "Assistência Técnica"
-        );
+        // ==========================================
+        // ASSISTÊNCIA
+        // ==========================================
 
         context.setVariable(
                 "nomeFantasia",
-                nomeFantasia
+                config.getNomeFantasia()
         );
 
         context.setVariable(
@@ -149,9 +118,9 @@ public class ComprovantePdfService {
                 config.getRodapeTexto()
         );
 
-        // -----------------------------------------------------
-        // DADOS DA OS
-        // -----------------------------------------------------
+        // ==========================================
+        // OS
+        // ==========================================
 
         context.setVariable(
                 "numeroOs",
@@ -188,15 +157,14 @@ public class ComprovantePdfService {
                 ordem.getPeca()
         );
 
-        // IMPORTANTE
         context.setVariable(
                 "valor",
                 valor
         );
 
-        // -----------------------------------------------------
+        // ==========================================
         // GARANTIA
-        // -----------------------------------------------------
+        // ==========================================
 
         context.setVariable(
                 "temGarantia",
@@ -220,18 +188,19 @@ public class ComprovantePdfService {
                         : null
         );
 
-        // =====================================================
-        // GERAR HTML
-        // =====================================================
+        // ==========================================
+        // THYMELEAF
+        // ==========================================
 
-        String html = templateEngine.process(
-                "comprovante",
-                context
-        );
+        String html =
+                templateEngine.process(
+                        "comprovante",
+                        context
+                );
 
-        // =====================================================
-        // GERAR PDF
-        // =====================================================
+        // ==========================================
+        // PDF
+        // ==========================================
 
         try (ByteArrayOutputStream os =
                      new ByteArrayOutputStream()) {
@@ -254,6 +223,8 @@ public class ComprovantePdfService {
 
         } catch (Exception e) {
 
+            e.printStackTrace();
+
             throw new RuntimeException(
                     "Erro ao gerar PDF do comprovante",
                     e
@@ -261,32 +232,18 @@ public class ComprovantePdfService {
         }
     }
 
-    // =========================================================
-    // MÉTODOS AUXILIARES
-    // =========================================================
-
     private String valorOuPadrao(
             String valor,
             String padrao
     ) {
-
-        if (valor != null && !valor.isBlank()) {
-            return valor;
-        }
-
-        if (padrao != null && !padrao.isBlank()) {
-            return padrao;
-        }
-
-        return "";
+        return valor != null && !valor.isBlank()
+                ? valor
+                : padrao;
     }
 
     private String corOuPadrao(String cor) {
-
-        if (cor != null && !cor.isBlank()) {
-            return cor;
-        }
-
-        return "#1e3a8a";
+        return cor != null && !cor.isBlank()
+                ? cor
+                : "#1e3a8a";
     }
 }

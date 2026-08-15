@@ -650,11 +650,8 @@
                     Valor do serviço
                 </span>
 
-            <span
-                    class="kpi-value"
-                    th:text="${valor != null ? 'R$ ' + #numbers.formatDecimal(valor, 1, 2) : 'R$ 0,00'}"
-            >
-                R$ 0,00
+            <span class="kpi-value"
+                  th:text="'R$ ' + ${#numbers.formatDecimal(valor, 1, 2)}">
             </span>
 
             <div class="kpi-sub">
