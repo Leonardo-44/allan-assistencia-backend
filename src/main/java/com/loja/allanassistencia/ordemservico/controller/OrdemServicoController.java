@@ -68,7 +68,7 @@ public class OrdemServicoController {
         return ordemServicoService.verificarGarantia(id);
     }
 
-    @PostMapping("/{id}/comprovante-pdf")
+    @PostMapping("/{id}/comprovante")
     public ResponseEntity<byte[]> gerarComprovantePdf(
             @PathVariable Long id,
             @RequestBody(required = false) ComprovanteRequestDTO dto
