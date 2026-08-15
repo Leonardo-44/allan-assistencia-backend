@@ -52,7 +52,7 @@ public class SecurityConfig {
                 "http://localhost:4200",
                 System.getenv().getOrDefault("FRONTEND_URL", "http://localhost:4200")
         ));
-        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE"));
+        config.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE"));
         config.setAllowedHeaders(List.of("Content-Type", "Authorization"));
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
