@@ -50,9 +50,10 @@ public class SecurityConfig {
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowedOrigins(List.of(
                 "http://localhost:4200",
-                System.getenv().getOrDefault("FRONTEND_URL", "http://localhost:4200")
-        ));
-        config.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE"));
+                "https://alan-assistencia-front-rho.vercel.app",
+                System.getenv().getOrDefault("FRONTEND_URL", "")
+        ).stream().filter(s -> !s.isBlank()).toList());
+        config.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(List.of("Content-Type", "Authorization"));
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
