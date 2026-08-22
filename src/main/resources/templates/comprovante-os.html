@@ -179,7 +179,7 @@
             background: #f8fafc;
             border: 1px solid #e2e8f0;
             border-radius: 14px;
-            padding: 22px 24px 4px;
+            padding: 22px 24px 6px;
         }
 
         .info-row {
@@ -287,14 +287,8 @@
         }
 
         .status-pill.inativa {
-            display: block;
-            font-size: 15px;
-            font-weight: 800;
-            color: #0f172a;
-            text-transform: uppercase;
-            letter-spacing: 0.3px;
-            background: none;
-            padding: 0;
+            background-color: #fee2e2;
+            color: #dc2626;
         }
 
         .aviso-garantia {
@@ -424,8 +418,8 @@
 
         .footer-bottom-cell {
             display: table-cell;
-            width: 50%;
             vertical-align: middle;
+            width: 50%;
             font-size: 10.5px;
             color: #475569;
         }
@@ -481,7 +475,6 @@
             <p class="doc-title-small">Comprovante de</p>
             <p class="doc-title-big">Serviço</p>
             <div class="doc-meta-pill">
-                OS <b th:text="'#' + ${numeroOs}"></b>
                 <span class="sep">&#8226;</span>
                 <b th:text="${dataEmissao}"></b>
             </div>
