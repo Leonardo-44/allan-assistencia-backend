@@ -6,6 +6,7 @@ import com.loja.allanassistencia.exception.RecursoNaoEncontradoException;
 import com.loja.allanassistencia.ordemservico.dto.ComprovanteRequestDTO;
 import com.loja.allanassistencia.ordemservico.entity.OrdemServico;
 import com.loja.allanassistencia.ordemservico.repository.OrdemServicoRepository;
+import com.loja.allanassistencia.shared.util.LogoResourceService;
 import com.openhtmltopdf.pdfboxout.PdfRendererBuilder;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
@@ -22,15 +23,18 @@ public class ComprovantePdfService {
     private final OrdemServicoRepository ordemServicoRepository;
     private final ConfiguracaoAssistenciaService configuracaoService;
     private final TemplateEngine templateEngine;
+    private final LogoResourceService logoResourceService;
 
     public ComprovantePdfService(
             OrdemServicoRepository ordemServicoRepository,
             ConfiguracaoAssistenciaService configuracaoService,
-            TemplateEngine templateEngine
+            TemplateEngine templateEngine,
+            LogoResourceService logoResourceService
     ) {
         this.ordemServicoRepository = ordemServicoRepository;
         this.configuracaoService = configuracaoService;
         this.templateEngine = templateEngine;
+        this.logoResourceService = logoResourceService;
     }
 
     public byte[] gerarPdf(Long ordemServicoId, ComprovanteRequestDTO dto) {
@@ -108,9 +112,10 @@ public class ComprovantePdfService {
                 corOuPadrao(config.getCorPrimaria())
         );
 
+        String logo = logoResourceService.obterLogoBase64();
         context.setVariable(
                 "logoUrl",
-                config.getLogoUrl()
+                logo != null ? logo : config.getLogoUrl()
         );
 
         context.setVariable(

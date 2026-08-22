@@ -27,7 +27,7 @@
 
         .topbar {
             height: 7px;
-            background: [[${corPrimaria}]];
+            background-color: [[${corPrimaria}]] !important;
             margin: 0 -46px 30px;
         }
 
@@ -221,8 +221,8 @@
         }
 
         .kpi-card.destaque {
-            background: [[${corPrimaria}]];
-            border-color: [[${corPrimaria}]];
+            background-color: [[${corPrimaria}]] !important;
+            border-color: [[${corPrimaria}]] !important;
         }
 
         .kpi-label {
@@ -246,15 +246,15 @@
         }
 
         .kpi-card.destaque .kpi-label {
-            color: #dbeafe;
+            color: #dbeafe !important;
         }
 
         .kpi-card.destaque .kpi-value {
-            color: #ffffff;
+            color: #ffffff !important;
         }
 
         .kpi-card.destaque .kpi-sub {
-            color: #bfdbfe;
+            color: #bfdbfe !important;
         }
 
         .kpi-card:not(.destaque) .kpi-label {
@@ -418,6 +418,13 @@
                 <span class="value" th:text="${nomeProduto}"></span>
             </div>
 
+        </div>
+
+        <div class="info-row" th:if="${imei}">
+            <div class="info-item">
+                <span class="label">IMEI</span>
+                <span class="value" th:text="${imei}"></span>
+            </div>
         </div>
 
         <div class="info-row" th:if="${defeito}">

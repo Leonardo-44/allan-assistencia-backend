@@ -7,6 +7,7 @@ public record ComprovanteRequestDTO(
         String nomeCliente,
         String servicoRealizado,
         BigDecimal valor,
-        Integer garantiaDias
+        Integer garantiaDias,
+        String imei
 ) {
 }

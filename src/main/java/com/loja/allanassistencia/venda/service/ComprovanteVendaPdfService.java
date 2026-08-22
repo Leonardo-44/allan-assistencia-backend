@@ -3,6 +3,7 @@ package com.loja.allanassistencia.venda.service;
 import com.loja.allanassistencia.configuracao.entity.ConfiguracaoAssistencia;
 import com.loja.allanassistencia.configuracao.service.ConfiguracaoAssistenciaService;
 import com.loja.allanassistencia.exception.RecursoNaoEncontradoException;
+import com.loja.allanassistencia.shared.util.LogoResourceService;
 import com.loja.allanassistencia.venda.dto.ComprovanteVendaRequestDTO;
 import com.loja.allanassistencia.venda.entity.Venda;
 import com.loja.allanassistencia.venda.repository.VendaRepository;
@@ -22,15 +23,18 @@ public class ComprovanteVendaPdfService {
     private final VendaRepository vendaRepository;
     private final ConfiguracaoAssistenciaService configuracaoService;
     private final TemplateEngine templateEngine;
+    private final LogoResourceService logoResourceService;
 
     public ComprovanteVendaPdfService(
             VendaRepository vendaRepository,
             ConfiguracaoAssistenciaService configuracaoService,
-            TemplateEngine templateEngine
+            TemplateEngine templateEngine,
+            LogoResourceService logoResourceService
     ) {
         this.vendaRepository = vendaRepository;
         this.configuracaoService = configuracaoService;
         this.templateEngine = templateEngine;
+        this.logoResourceService = logoResourceService;
     }
 
     public byte[] gerarPdf(Long vendaId, ComprovanteVendaRequestDTO dto) {
@@ -100,7 +104,10 @@ public class ComprovanteVendaPdfService {
         context.setVariable("endereco", config.getEndereco());
         context.setVariable("telefone", config.getTelefone());
         context.setVariable("corPrimaria", corOuPadrao(config.getCorPrimaria()));
-        context.setVariable("logoUrl", config.getLogoUrl());
+
+        String logo = logoResourceService.obterLogoBase64();
+        context.setVariable("logoUrl", logo != null ? logo : config.getLogoUrl());
+
         context.setVariable("rodapeTexto", config.getRodapeTexto());
 
         // ==========================================
