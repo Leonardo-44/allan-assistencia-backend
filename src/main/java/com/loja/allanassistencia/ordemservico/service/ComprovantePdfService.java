@@ -194,7 +194,7 @@ public class ComprovantePdfService {
 
         String html =
                 templateEngine.process(
-                        "comprovante",
+                        "comprovante-os",
                         context
                 );
 
