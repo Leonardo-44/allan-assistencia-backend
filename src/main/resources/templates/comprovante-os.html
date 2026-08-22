@@ -25,34 +25,16 @@
             background: #ffffff;
         }
 
-        /* ===================== HEADER (dark) ===================== */
+        /* ===================== HEADER (fundo solido, sem gradiente/svg) ===================== */
 
         .header-wrap {
-            position: relative;
             background-color: #0a0a0a;
-            background-image:
-                    radial-gradient(circle at 15% 20%, rgba(220,38,38,0.18) 0%, rgba(220,38,38,0) 40%),
-                    repeating-linear-gradient(120deg, rgba(255,255,255,0.035) 0px, rgba(255,255,255,0.035) 1px, transparent 1px, transparent 26px),
-                    repeating-linear-gradient(60deg, rgba(255,255,255,0.035) 0px, rgba(255,255,255,0.035) 1px, transparent 1px, transparent 26px);
             padding: 40px 46px 34px;
-            overflow: hidden;
-        }
-
-        .header-wrap::before {
-            content: "";
-            position: absolute;
-            top: -60px;
-            right: -80px;
-            width: 320px;
-            height: 320px;
-            background: radial-gradient(circle, rgba(220,38,38,0.35) 0%, rgba(220,38,38,0) 70%);
         }
 
         .header {
             display: table;
             width: 100%;
-            position: relative;
-            z-index: 2;
         }
 
         .header-left {
@@ -85,10 +67,10 @@
             vertical-align: middle;
             padding-top: 36px;
             font-size: 10px;
-            color: #64748b;
+            color: #94a3b8;
             text-transform: uppercase;
             letter-spacing: 1px;
-            border: 1px dashed #3f3f46;
+            border: 1px solid #3f3f46;
             border-radius: 12px;
         }
 
@@ -109,13 +91,11 @@
 
         .doc-title-big {
             margin: 0 0 12px;
-            font-size: 46px;
-            font-weight: 900;
+            font-size: 44px;
+            font-weight: 800;
             letter-spacing: 1px;
-            line-height: 0.95;
             text-transform: uppercase;
             color: #dc2626;
-            text-shadow: 0 2px 0 rgba(0,0,0,0.4);
         }
 
         .doc-meta-pill {
@@ -126,7 +106,7 @@
             font-size: 11px;
             font-weight: 700;
             color: #f1f5f9;
-            background: rgba(220,38,38,0.08);
+            background-color: #1a0a0a;
         }
 
         .doc-meta-pill .sep {
@@ -138,48 +118,55 @@
             color: #ffffff;
         }
 
-        .header-curve {
-            height: 10px;
-            background: linear-gradient(90deg, #7f1d1d 0%, #dc2626 50%, #7f1d1d 100%);
-            border-radius: 0 0 50% 50% / 0 0 100% 100%;
+        .header-bar {
+            height: 6px;
+            background-color: #dc2626;
         }
 
-        /* ===================== SECTION TITLE RIBBON ===================== */
+        /* ===================== FAIXA "DADOS DO ATENDIMENTO" ===================== */
 
         .section-title-row {
             text-align: center;
             margin: 30px 0 18px;
         }
 
-        .section-title-ribbon {
+        .section-title-outer {
             display: inline-block;
-            position: relative;
-            background: #0f172a;
+        }
+
+        .section-title-table {
+            display: table;
+        }
+
+        .section-title-cell {
+            display: table-cell;
+            vertical-align: middle;
+        }
+
+        .chevron-left {
+            width: 0;
+            height: 0;
+            border-top: 15px solid transparent;
+            border-bottom: 15px solid transparent;
+            border-right: 12px solid #dc2626;
+        }
+
+        .chevron-right {
+            width: 0;
+            height: 0;
+            border-top: 15px solid transparent;
+            border-bottom: 15px solid transparent;
+            border-left: 12px solid #dc2626;
+        }
+
+        .section-title-ribbon {
+            background-color: #0f172a;
             color: #ffffff;
             font-size: 12px;
             font-weight: 800;
             letter-spacing: 1.5px;
             text-transform: uppercase;
-            padding: 10px 34px;
-            border-radius: 4px;
-        }
-
-        .section-title-ribbon .chevron {
-            position: absolute;
-            top: 0;
-            bottom: 0;
-            width: 14px;
-            background: #dc2626;
-        }
-
-        .section-title-ribbon .chevron.left {
-            left: -14px;
-            clip-path: polygon(100% 0, 0 50%, 100% 100%);
-        }
-
-        .section-title-ribbon .chevron.right {
-            right: -14px;
-            clip-path: polygon(0 0, 100% 50%, 0 100%);
+            padding: 10px 26px;
         }
 
         /* ===================== BODY CONTENT ===================== */
@@ -227,7 +214,7 @@
             width: 34px;
             height: 34px;
             border-radius: 50%;
-            background: #0f172a;
+            background-color: #0f172a;
             text-align: center;
             line-height: 34px;
         }
@@ -267,14 +254,14 @@
 
         .value-money {
             display: block;
-            font-size: 21px;
+            font-size: 19px;
             font-weight: 800;
             font-family: 'Courier New', monospace;
             color: #dc2626;
         }
 
         .money-sub {
-            font-size: 10px;
+            font-size: 9.5px;
             color: #64748b;
             font-weight: 500;
         }
@@ -286,16 +273,16 @@
 
         .status-pill {
             display: inline-block;
-            padding: 6px 14px;
+            padding: 6px 16px;
             border-radius: 999px;
             font-size: 11px;
             font-weight: 800;
             text-transform: uppercase;
-            letter-spacing: 0.3px;
+            letter-spacing: 0.4px;
         }
 
         .status-pill.ativa {
-            background: #dcfce7;
+            background-color: #dcfce7;
             color: #16a34a;
         }
 
@@ -317,12 +304,12 @@
             line-height: 1.6;
         }
 
-        /* ===================== SIGNATURES ===================== */
+        /* ===================== ASSINATURAS ===================== */
 
         .assinaturas {
             display: table;
             width: 100%;
-            margin-top: 46px;
+            margin-top: 60px;
             position: relative;
         }
 
@@ -338,7 +325,7 @@
             width: 26px;
             height: 26px;
             border-radius: 50%;
-            background: #fee2e2;
+            background-color: #fee2e2;
             display: inline-block;
             text-align: center;
             line-height: 26px;
@@ -372,17 +359,17 @@
         .badge-selo {
             position: absolute;
             left: 50%;
-            top: -46px;
+            top: -34px;
             transform: translateX(-50%);
-            width: 92px;
+            width: 64px;
             text-align: center;
         }
 
-        /* ===================== FOOTER ===================== */
+        /* ===================== RODAPE ===================== */
 
         .footer-bar {
             margin: 54px 46px 0;
-            background: #0f172a;
+            background-color: #0f172a;
             border-radius: 16px;
             padding: 20px 30px;
             display: table;
@@ -460,6 +447,13 @@
             vertical-align: middle;
         }
 
+        .rodape-texto {
+            text-align: center;
+            color: #94a3b8;
+            font-size: 9.5px;
+            margin: 0 46px 24px;
+        }
+
     </style>
 
 </head>
@@ -497,15 +491,17 @@
 
 </div>
 
-<div class="header-curve"></div>
+<div class="header-bar"></div>
 
 <div class="content">
 
     <div class="section-title-row">
-        <div class="section-title-ribbon">
-            <span class="chevron left"></span>
-            Dados do atendimento
-            <span class="chevron right"></span>
+        <div class="section-title-outer">
+            <div class="section-title-table">
+                <div class="section-title-cell"><div class="chevron-left"></div></div>
+                <div class="section-title-cell"><div class="section-title-ribbon">Dados do atendimento</div></div>
+                <div class="section-title-cell"><div class="chevron-right"></div></div>
+            </div>
         </div>
     </div>
 
@@ -725,7 +721,7 @@
 
 </div>
 
-<p th:if="${rodapeTexto}" th:text="${rodapeTexto}" style="text-align:center;color:#94a3b8;font-size:9.5px;margin:0 46px 24px;"></p>
+<p class="rodape-texto" th:if="${rodapeTexto}" th:text="${rodapeTexto}"></p>
 
 </body>
 
