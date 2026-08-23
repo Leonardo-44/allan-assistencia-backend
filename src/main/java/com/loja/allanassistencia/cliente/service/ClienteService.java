@@ -46,7 +46,7 @@ public class ClienteService {
         Cliente cliente = new Cliente(
                 dto.nome(),
                 dto.telefone(),
-                dto.email()
+                dto.endereco()
         );
 
         Cliente clienteSalvo = clienteRepository.save(cliente);
@@ -65,7 +65,7 @@ public class ClienteService {
 
         cliente.setNome(dto.nome());
         cliente.setTelefone(dto.telefone());
-        cliente.setEndereco(dto.email());
+        cliente.setEndereco(dto.endereco());
 
         Cliente clienteAtualizado = clienteRepository.save(cliente);
 
