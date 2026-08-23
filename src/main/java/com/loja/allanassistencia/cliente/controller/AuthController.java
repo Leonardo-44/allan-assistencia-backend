@@ -1,4 +1,4 @@
-package com.loja.allanassistencia.controller;
+package com.loja.allanassistencia.cliente.controller;
 
 import com.loja.allanassistencia.security.JwtUtil;
 import org.springframework.beans.factory.annotation.Value;

@@ -7,6 +7,7 @@ import com.loja.allanassistencia.ordemservico.dto.ComprovanteRequestDTO;
 import com.loja.allanassistencia.ordemservico.entity.OrdemServico;
 import com.loja.allanassistencia.ordemservico.repository.OrdemServicoRepository;
 import com.loja.allanassistencia.shared.util.LogoResourceService;
+import com.loja.allanassistencia.shared.util.AssinaturaResourceService;
 import com.openhtmltopdf.pdfboxout.PdfRendererBuilder;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
@@ -24,17 +25,20 @@ public class ComprovantePdfService {
     private final ConfiguracaoAssistenciaService configuracaoService;
     private final TemplateEngine templateEngine;
     private final LogoResourceService logoResourceService;
+    private final AssinaturaResourceService assinaturaResourceService;
 
     public ComprovantePdfService(
             OrdemServicoRepository ordemServicoRepository,
             ConfiguracaoAssistenciaService configuracaoService,
             TemplateEngine templateEngine,
-            LogoResourceService logoResourceService
+            LogoResourceService logoResourceService,
+            AssinaturaResourceService assinaturaResourceService
     ) {
         this.ordemServicoRepository = ordemServicoRepository;
         this.configuracaoService = configuracaoService;
         this.templateEngine = templateEngine;
         this.logoResourceService = logoResourceService;
+        this.assinaturaResourceService = assinaturaResourceService;
     }
 
     public byte[] gerarPdf(Long ordemServicoId, ComprovanteRequestDTO dto) {
@@ -61,6 +65,11 @@ public class ComprovantePdfService {
         String servicoRealizado = valorOuPadrao(
                 dto != null ? dto.servicoRealizado() : null,
                 ordem.getServicoRealizado()
+        );
+
+        String imei = valorOuPadrao(
+                dto != null ? dto.imei() : null,
+                ordem.getImei()
         );
 
         BigDecimal valor =
@@ -118,6 +127,12 @@ public class ComprovantePdfService {
                 logo != null ? logo : config.getLogoUrl()
         );
 
+        String assinatura = assinaturaResourceService.obterAssinaturaBase64();
+        context.setVariable(
+                "assinaturaUrl",
+                assinatura
+        );
+
         context.setVariable(
                 "rodapeTexto",
                 config.getRodapeTexto()
@@ -145,6 +160,11 @@ public class ComprovantePdfService {
         context.setVariable(
                 "nomeCliente",
                 nomeCliente
+        );
+
+        context.setVariable(
+                "imei",
+                imei
         );
 
         context.setVariable(

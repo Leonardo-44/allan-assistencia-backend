@@ -25,7 +25,7 @@ public class ClienteService {
                         cliente.getId(),
                         cliente.getNome(),
                         cliente.getTelefone(),
-                        cliente.getEmail()
+                        cliente.getEndereco()
                 ))
                 .toList();
     }
@@ -38,7 +38,7 @@ public class ClienteService {
                 cliente.getId(),
                 cliente.getNome(),
                 cliente.getTelefone(),
-                cliente.getEmail()
+                cliente.getEndereco()
         );
     }
 
@@ -55,7 +55,7 @@ public class ClienteService {
                 clienteSalvo.getId(),
                 clienteSalvo.getNome(),
                 clienteSalvo.getTelefone(),
-                clienteSalvo.getEmail()
+                clienteSalvo.getEndereco()
         );
     }
 
@@ -65,7 +65,7 @@ public class ClienteService {
 
         cliente.setNome(dto.nome());
         cliente.setTelefone(dto.telefone());
-        cliente.setEmail(dto.email());
+        cliente.setEndereco(dto.email());
 
         Cliente clienteAtualizado = clienteRepository.save(cliente);
 
@@ -73,7 +73,7 @@ public class ClienteService {
                 clienteAtualizado.getId(),
                 clienteAtualizado.getNome(),
                 clienteAtualizado.getTelefone(),
-                clienteAtualizado.getEmail()
+                clienteAtualizado.getEndereco()
         );
     }
 

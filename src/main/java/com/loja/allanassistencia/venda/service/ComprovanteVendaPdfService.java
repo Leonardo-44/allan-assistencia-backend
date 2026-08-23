@@ -4,6 +4,7 @@ import com.loja.allanassistencia.configuracao.entity.ConfiguracaoAssistencia;
 import com.loja.allanassistencia.configuracao.service.ConfiguracaoAssistenciaService;
 import com.loja.allanassistencia.exception.RecursoNaoEncontradoException;
 import com.loja.allanassistencia.shared.util.LogoResourceService;
+import com.loja.allanassistencia.shared.util.AssinaturaResourceService;
 import com.loja.allanassistencia.venda.dto.ComprovanteVendaRequestDTO;
 import com.loja.allanassistencia.venda.entity.Venda;
 import com.loja.allanassistencia.venda.repository.VendaRepository;
@@ -24,17 +25,20 @@ public class ComprovanteVendaPdfService {
     private final ConfiguracaoAssistenciaService configuracaoService;
     private final TemplateEngine templateEngine;
     private final LogoResourceService logoResourceService;
+    private final AssinaturaResourceService assinaturaResourceService;
 
     public ComprovanteVendaPdfService(
             VendaRepository vendaRepository,
             ConfiguracaoAssistenciaService configuracaoService,
             TemplateEngine templateEngine,
-            LogoResourceService logoResourceService
+            LogoResourceService logoResourceService,
+            AssinaturaResourceService assinaturaResourceService
     ) {
         this.vendaRepository = vendaRepository;
         this.configuracaoService = configuracaoService;
         this.templateEngine = templateEngine;
         this.logoResourceService = logoResourceService;
+        this.assinaturaResourceService = assinaturaResourceService;
     }
 
     public byte[] gerarPdf(Long vendaId, ComprovanteVendaRequestDTO dto) {
@@ -107,6 +111,9 @@ public class ComprovanteVendaPdfService {
 
         String logo = logoResourceService.obterLogoBase64();
         context.setVariable("logoUrl", logo != null ? logo : config.getLogoUrl());
+
+        String assinatura = assinaturaResourceService.obterAssinaturaBase64();
+        context.setVariable("assinaturaUrl", assinatura);
 
         context.setVariable("rodapeTexto", config.getRodapeTexto());
 

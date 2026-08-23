@@ -12,15 +12,15 @@ public class Cliente {
 
     private String nome;
     private String telefone;
-    private String email;
+    private String endereco;
 
     public Cliente() {
     }
 
-    public Cliente(String nome, String telefone, String email) {
+    public Cliente(String nome, String telefone, String endereco) {
         this.nome = nome;
         this.telefone = telefone;
-        this.email = email;
+        this.endereco = endereco;
     }
 
     public Long getId() {
@@ -43,11 +43,11 @@ public class Cliente {
         this.telefone = telefone;
     }
 
-    public String getEmail() {
-        return email;
+    public String getEndereco() {
+        return endereco;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setEndereco(String email) {
+        this.endereco = endereco;
     }
 }

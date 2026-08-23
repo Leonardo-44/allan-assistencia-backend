@@ -406,6 +406,13 @@
             vertical-align: bottom;
         }
 
+        .assinatura-img {
+            display: block;
+            max-width: 170px;
+            max-height: 55px;
+            margin: 0 auto -14px;
+        }
+
         .assinatura .linha {
             border-top: 1px solid #cbd5e1;
             margin-bottom: 8px;
@@ -735,6 +742,7 @@
         </div>
 
         <div class="assinatura">
+            <img class="assinatura-img" th:if="${assinaturaUrl}" th:src="${assinaturaUrl}" alt="Assinatura do responsável"/>
             <div class="linha"></div>
             <div class="nome" th:text="${nomeFantasia}"></div>
             <div class="tipo">Responsável pela venda</div>
