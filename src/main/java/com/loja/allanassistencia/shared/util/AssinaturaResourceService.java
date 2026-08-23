@@ -10,7 +10,7 @@ import java.util.Base64;
 @Component
 public class AssinaturaResourceService {
 
-    private static final String ASSINATURA_PATH = "static/img/alanassinatura.jpeg";
+    private static final String ASSINATURA_PATH = "static/img/alanassinatura.png";
 
     private String assinaturaBase64Cache;
 

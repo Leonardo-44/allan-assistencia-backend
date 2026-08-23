@@ -493,6 +493,24 @@
             margin: 0 46px 24px;
         }
 
+        .assinatura-img-wrap {
+            width: 170px;
+            height: 55px;
+            margin: 0 auto -14px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .assinatura-img {
+            display: block;
+            max-width: none;
+            height: 55px;
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%); /* ajuste esse valor se precisar deslocar mais pra algum lado */
+        }
+
     </style>
 
 </head>
@@ -717,7 +735,9 @@
         </div>
 
         <div class="assinatura">
-            <img class="assinatura-img" th:if="${assinaturaUrl}" th:src="${assinaturaUrl}" alt="Assinatura do responsável"/>
+            <div class="assinatura-img-wrap" th:if="${assinaturaUrl}">
+                <img class="assinatura-img" th:src="${assinaturaUrl}" alt="Assinatura do responsável"/>
+            </div>
             <div class="linha"></div>
             <div class="nome" th:text="${nomeFantasia}"></div>
             <div class="tipo">Responsável pela assistência</div>
