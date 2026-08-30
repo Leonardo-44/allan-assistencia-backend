@@ -81,6 +81,11 @@ public class ComprovanteVendaPdfService {
                 venda.getFormaPagamento()
         );
 
+        Integer garantiaDias =
+                dto != null && dto.garantiaDias() != null
+                        ? dto.garantiaDias()
+                        : null;
+
         BigDecimal valorRestante = valor.subtract(valorPago);
         if (valorRestante.compareTo(BigDecimal.ZERO) < 0) {
             valorRestante = BigDecimal.ZERO;
@@ -123,6 +128,11 @@ public class ComprovanteVendaPdfService {
 
         context.setVariable("numeroVenda", venda.getId());
         context.setVariable("dataEmissao", hoje.format(formatter));
+
+        LocalDate dataVendaLocal = venda.getDataVenda() != null
+                ? venda.getDataVenda().toLocalDate()
+                : hoje;
+
         context.setVariable("dataVenda",
                 venda.getDataVenda() != null
                         ? venda.getDataVenda().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"))
@@ -136,6 +146,21 @@ public class ComprovanteVendaPdfService {
         context.setVariable("valorPago", valorPago);
         context.setVariable("valorRestante", valorRestante);
         context.setVariable("statusPagamento", statusPagamento);
+
+        // ==========================================
+        // GARANTIA
+        // ==========================================
+
+        if (garantiaDias != null && garantiaDias > 0) {
+            context.setVariable("garantiaDias", garantiaDias);
+            context.setVariable(
+                    "dataLimiteGarantia",
+                    dataVendaLocal.plusDays(garantiaDias).format(formatter)
+            );
+        } else {
+            context.setVariable("garantiaDias", null);
+            context.setVariable("dataLimiteGarantia", null);
+        }
 
         // ==========================================
         // THYMELEAF

@@ -320,6 +320,26 @@
             color: #dc2626;
         }
 
+        .ic-shield-top {
+            position: absolute;
+            top: 7px;
+            left: 10px;
+            width: 14px;
+            height: 8px;
+            background-color: #dc2626;
+            border-radius: 7px 7px 0 0;
+        }
+
+        .ic-shield-body {
+            position: absolute;
+            top: 13px;
+            left: 10px;
+            width: 14px;
+            height: 10px;
+            background-color: #dc2626;
+            border-radius: 0 0 7px 7px;
+        }
+
         /* ===================== KPI ===================== */
 
         .kpi-row {
@@ -701,6 +721,26 @@
                     <div class="info-text">
                         <span class="label">Forma de pagamento</span>
                         <span class="value" th:text="${formaPagamento}"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="divider" th:if="${garantiaDias != null}"></div>
+
+        <div class="info-row" th:if="${garantiaDias != null}">
+            <div class="info-item full">
+                <div class="info-icon-wrap">
+                    <div class="icon-cell">
+                        <div class="icon-circle">
+                            <div class="ic-shield-top"></div>
+                            <div class="ic-shield-body"></div>
+                        </div>
+                    </div>
+                    <div class="info-text">
+                        <span class="label">Garantia</span>
+                        <span class="value"
+                              th:text="${garantiaDias + ' dias (até ' + dataLimiteGarantia + ')'}"></span>
                     </div>
                 </div>
             </div>

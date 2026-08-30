@@ -7,6 +7,7 @@ public record ComprovanteVendaRequestDTO(
         String imei,
         BigDecimal valor,
         BigDecimal valorPago,
-        String formaPagamento
+        String formaPagamento,
+        Integer garantiaDias
 ) {
 }
