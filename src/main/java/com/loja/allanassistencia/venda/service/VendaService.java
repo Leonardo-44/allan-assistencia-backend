@@ -16,10 +16,13 @@ import com.loja.allanassistencia.movimentacaofinanceira.entity.TipoMovimentacao;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
 
 @Service
 public class VendaService {
+
+    private static final ZoneId FUSO_BRASIL = ZoneId.of("America/Sao_Paulo");
 
     private final VendaRepository vendaRepository;
     private final ClienteRepository clienteRepository;
@@ -69,7 +72,7 @@ public class VendaService {
         venda.setValor(dto.valor());
         venda.setValorPago(valorPago);
         venda.setFormaPagamento(dto.formaPagamento());
-        venda.setDataVenda(LocalDateTime.now());
+        venda.setDataVenda(LocalDateTime.now(FUSO_BRASIL));
 
         Venda vendaSalva = vendaRepository.save(venda);
 
@@ -85,7 +88,7 @@ public class VendaService {
                 vendaSalva.getFormaPagamento()
         );
         movimentacao.setDataMovimentacao(
-                LocalDateTime.now()
+                LocalDateTime.now(FUSO_BRASIL)
         );
 
         movimentacaoFinanceiraRepository.save(movimentacao);
