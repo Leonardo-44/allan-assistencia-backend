@@ -16,10 +16,13 @@ import org.thymeleaf.context.Context;
 import java.io.ByteArrayOutputStream;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 
 @Service
 public class ComprovanteVendaPdfService {
+
+    private static final ZoneId FUSO_BRASIL = ZoneId.of("America/Sao_Paulo");
 
     private final VendaRepository vendaRepository;
     private final ConfiguracaoAssistenciaService configuracaoService;
@@ -100,7 +103,7 @@ public class ComprovanteVendaPdfService {
             statusPagamento = "PENDENTE";
         }
 
-        LocalDate hoje = LocalDate.now();
+        LocalDate hoje = LocalDate.now(FUSO_BRASIL);
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
         Context context = new Context();
